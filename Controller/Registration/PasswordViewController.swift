@@ -80,8 +80,7 @@ class PasswordViewController: UIViewController {
         currentViewModel?.confirmPassword = confirmPasswordTextField.text!
         
         guard passwordMatchValidation(password: currentViewModel!.password  , rePassword: currentViewModel!.confirmPassword) else {
-            //TODO: add a warning label
-            //            nameWarningLabel.Text = "Username can't be empty"
+            alertAction(controller: self, message: "Password Doesn't Match")
             print("password doesnt match")
             return
         }

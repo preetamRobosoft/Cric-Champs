@@ -10,7 +10,7 @@ import UIKit
 
 public func passwordMatchValidation(password: String, rePassword: String) -> Bool {
     
-    if password != rePassword {
+    if password.trimmingCharacters(in: .whitespacesAndNewlines) != rePassword.trimmingCharacters(in: .whitespacesAndNewlines) {
         
         return false
         
@@ -40,14 +40,9 @@ public func isValidEmail(email: String) -> Bool {
     return emailPred.evaluate(with: email)
 }
 
-func validateMobileNumber(number: String) -> Bool {
-    
-    let phoneRegEx = "^[+91][0-9]{10}$"
-    
-    let phonePred = NSPredicate(format:"SELF MATCHES %@", phoneRegEx)
-
-    return phonePred.evaluate(with: number)
-
+func isStringNumeric(string: String) -> Bool {
+    let nums = CharacterSet.decimalDigits.inverted
+    return string.rangeOfCharacter(from: nums) == nil
 }
 
 func alertAction(controller: UIViewController, message: String) {

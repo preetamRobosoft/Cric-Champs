@@ -43,19 +43,19 @@ class LoginViewController: UIViewController {
     
     @IBAction func onLogInTapped(_ sender: UIButton) {
         guard let email = emailTextField.text, email != "" else {
-            alertAction(controller: self, message: "Email Field is emapty")
+            alertAction(controller: self, message: "Email Field is empty")
             return
         }
         
         guard let password = passwordTextField.text, password != "" else {
-            alertAction(controller: self, message: "Password Field is emapty")
+            alertAction(controller: self, message: "Password Field is empty")
             return
         }
         
         loginVM.user = User(emai: email, password: password)
         loginVM.assignHeaders()
-        loginVM.logInUser { (successFulLogIn) in
-            print(successFulLogIn, "success")
+        loginVM.logInUser { (successful) in
+            print(successful, "success")
         }
     }
 }

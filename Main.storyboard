@@ -1392,12 +1392,18 @@
                                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="0.39774186639999998" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
-                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="+91 78566 56515" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xjm-eq-Puz">
-                                                        <rect key="frame" x="0.0" y="21" width="275" height="34"/>
+                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="7856656515" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xjm-eq-Puz">
+                                                        <rect key="frame" x="30.5" y="21" width="244.5" height="34"/>
                                                         <color key="textColor" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
                                                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
                                                         <textInputTraits key="textInputTraits"/>
                                                     </textField>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="+91" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="roW-JR-KmX">
+                                                        <rect key="frame" x="0.0" y="28" width="28.5" height="20.5"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                        <color key="textColor" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
                                                 </subviews>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
@@ -1405,9 +1411,11 @@
                                                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="2Ej-aG-EKy" secondAttribute="trailing" constant="20" symbolic="YES" id="FaC-Bx-x4N"/>
                                                     <constraint firstAttribute="trailing" secondItem="xjm-eq-Puz" secondAttribute="trailing" id="KqF-IY-w2h"/>
                                                     <constraint firstItem="2Ej-aG-EKy" firstAttribute="leading" secondItem="I9F-lH-2Mt" secondAttribute="leading" id="Ngb-2c-GUh"/>
+                                                    <constraint firstItem="roW-JR-KmX" firstAttribute="leading" secondItem="I9F-lH-2Mt" secondAttribute="leading" id="QVe-YC-cvD"/>
                                                     <constraint firstItem="xjm-eq-Puz" firstAttribute="height" secondItem="I9F-lH-2Mt" secondAttribute="height" multiplier="0.618182" id="S97-5X-OAo"/>
+                                                    <constraint firstItem="roW-JR-KmX" firstAttribute="centerY" secondItem="xjm-eq-Puz" secondAttribute="centerY" id="SPf-5D-eXc"/>
                                                     <constraint firstItem="2Ej-aG-EKy" firstAttribute="height" secondItem="I9F-lH-2Mt" secondAttribute="height" multiplier="0.245455" id="auO-Iv-mew"/>
-                                                    <constraint firstItem="xjm-eq-Puz" firstAttribute="leading" secondItem="I9F-lH-2Mt" secondAttribute="leading" id="wHx-tu-hfU"/>
+                                                    <constraint firstItem="xjm-eq-Puz" firstAttribute="leading" secondItem="roW-JR-KmX" secondAttribute="trailing" constant="2" id="p6n-3K-vtF"/>
                                                     <constraint firstItem="2Ej-aG-EKy" firstAttribute="top" secondItem="I9F-lH-2Mt" secondAttribute="top" id="xvp-hC-Oaa"/>
                                                 </constraints>
                                             </view>

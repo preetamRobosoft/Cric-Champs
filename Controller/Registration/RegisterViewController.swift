@@ -67,32 +67,34 @@ class RegisterViewController: UIViewController {
     
     func areValidFields() -> Bool {
         guard let name = nameTextField.text else {
-            //TODO: add a warning label
-            //            nameWarningLabel.Text = "Username can't be empty"
+            alertAction(controller: self, message: "Name field is Empty")
             print("empty username")
             return false
         }
         
         guard let email = emailTextField.text else {
-            //TODO: add a warning label
-            //            nameWarningLabel.Text = "Username can't be empty"
+            alertAction(controller: self, message: "Email field is Empty")
             print("empty email")
             return false
         }
         
         guard isValidEmail(email: email) else {
-            //TODO: add a warning label
-            //            nameWarningLabel.Text = "Username can't be empty"
+            alertAction(controller: self, message: "Email is invalid")
             print("invalid email")
             return false
         }
         guard let phone = phoneTextField.text else {
-            //TODO: add a warning label
-            //            nameWarningLabel.Text = "Username can't be empty"
+            alertAction(controller: self, message: "Phone Number can't be empty")
             print("empty phone")
             return false
         }
+        
         let newPhone = phone.trimmingCharacters(in: .whitespaces)
+        
+        if newPhone.count != 10 && isStringNumeric(string: newPhone) {
+            alertAction(controller: self, message: "Invalid phone number")
+            return false
+        }
         
         registerVM.currentUser.username = name
         registerVM.currentUser.email = email

@@ -95,7 +95,11 @@ class RegistrationViewModel {
         parameters["username"] = currentUser.username
         parameters["gender"] = currentUser.gender
         parameters["email"] = currentUser.email
-        parameters["phoneNumber"] = currentUser.phoneNumber
+        if currentUser.phoneNumber?.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
+            parameters.removeValue(forKey: "phoneNumber")
+        } else {
+            parameters["phoneNumber"] = "+91\(currentUser.phoneNumber!)"
+        }
         parameters["city"] = currentUser.city
         parameters["age"] = currentUser.age
         parameters["password"] = currentUser.password
