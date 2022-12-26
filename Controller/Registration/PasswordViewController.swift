@@ -17,6 +17,7 @@ class PasswordViewController: UIViewController {
     @IBOutlet weak var emailTextField: UITextField!
     
     var isForgotPassword = false
+    var isResetPassword = false
     var currentViewModel: RegistrationViewModel?
     
     override func viewDidLoad() {
@@ -29,7 +30,7 @@ class PasswordViewController: UIViewController {
         
         _ = self.proceedButton.applyGradient( colours: [ #colorLiteral(red: 1, green: 0.7294117647, blue: 0.5490196078, alpha: 1), #colorLiteral(red: 0.9960784314, green: 0.3607843137, blue: 0.4156862745, alpha: 1)], cornerRadius: 4)
         
-        if isForgotPassword{
+        if isForgotPassword {
             setUpForgotPassword()
             
         } else {
@@ -84,14 +85,20 @@ class PasswordViewController: UIViewController {
             print("password doesnt match")
             return
         }
-        
+        if isResetPassword {
+            setNewPassword()
+        } else {
+            registerUser()
+        }
+    }
+    
+    private func registerUser(){
         guard let password = currentViewModel?.password else {return}
         currentViewModel?.currentUser.password = password
         currentViewModel?.assignParameters()
         currentViewModel?.registerCurrentUser { isSuccess in
             if isSuccess {
                 print("Successful registraion")
-
                 self.currentViewModel?.currentUserEmail = (self.currentViewModel?.currentUser.email)!
                 self.currentViewModel?.sendOTP() { didSendOTP in
                     if didSendOTP {
@@ -115,7 +122,53 @@ class PasswordViewController: UIViewController {
         navigationController?.pushViewController(otpVC, animated: true)
     }
     
+    private func setNewPassword() {
+        currentViewModel?.password = passwordTextField.text!
+        currentViewModel?.setnewPassword{ isSuccess in
+            if isSuccess {
+                print("Sucess")
+            }
+            
+        }
+    }
+    
+    private func resetPassword() {
+        currentViewModel?.password = passwordTextField.text!
+        currentViewModel?.setnewPassword { isSuccess in
+            if isSuccess {
+                print("Successful Password Updation")
+            } else {
+                print("RESET FAILED")
+            }
+        }
+    }
+    
     func onProceedClickForForgotPassword() {
-//        
+        if let email = emailTextField.text, email != ""{
+            currentViewModel?.currentUserEmail = email
+        }
+        currentViewModel?.resetPassword { isSuccess in
+            DispatchQueue.main.async {
+                if isSuccess {
+                    let otpVC = self.storyboard?.instantiateViewController(identifier: "OTPVerificationVC") as! OTPVerificationVC
+                    otpVC.isForgotPassword = true
+                    otpVC.resetPasswordDelagate = self
+                    otpVC.registerVM = self.currentViewModel
+                    self.navigationController?.pushViewController(otpVC, animated: true)
+                } else {
+                    print("ERROR")
+                }
+            }
+        }
+    }
+}
+
+
+extension PasswordViewController: ResetPassword {
+    func showSetPasswordView() {
+        self.isResetPassword = true
+        self.isForgotPassword = false
+        setUpSetPassword()
+        
     }
 }

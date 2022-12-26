@@ -54,3 +54,19 @@ func alertAction(controller: UIViewController, message: String) {
     controller.present(alert, animated: true, completion: nil)
 
 }
+
+func showAlert(controller: UIViewController, title: String, message: String, handlerOK:((UIAlertAction) -> Void)?, handlerCancel: ((UIAlertAction) -> Void)?) {
+    let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+    if handlerCancel != nil {
+        let action = UIAlertAction(title: "OK", style: .default, handler: handlerOK)
+        let (actionCancel) = UIAlertAction(title: "Cancle", style: .destructive, handler: handlerCancel)
+        alert.addAction(actionCancel)
+        alert.addAction(action)
+    } else {
+        let action = UIAlertAction(title: "OK", style: .default, handler: handlerOK)
+        alert.addAction(action)
+    }
+    DispatchQueue.main.async {
+        controller.present(alert, animated: true, completion: nil)
+    }
+}

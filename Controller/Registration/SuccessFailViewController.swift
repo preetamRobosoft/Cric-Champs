@@ -36,7 +36,15 @@ class SuccessFailViewController: UIViewController {
         }
     }
     @IBAction func onBackTapped(_ sender: Any) {
-        navigationController?.popViewController(animated: true)
+        for controller in self.navigationController!.viewControllers as Array {
+            if controller.isKind(of: HomeViewController.self) {
+                self.navigationController!.popToViewController(controller, animated: false)
+                break
+            }
+        }
     }
     
+    @IBAction func onClickCreateTournament(_ sender: Any) {
+       
+    }
 }

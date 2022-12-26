@@ -8,6 +8,9 @@
 import Foundation
 
 struct User {
-    let emai: String
+    let email: String
     let password: String
+    let name: String?
+    let photo: String?
+    var authorization: String?
 }

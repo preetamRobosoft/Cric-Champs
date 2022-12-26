@@ -9,21 +9,29 @@ import UIKit
 
 class TournamentCodeViewController: UIViewController {
 
+    var tournament: Tournament?
+    
+    @IBOutlet weak var tournamentCode: UILabel!
+    @IBOutlet weak var tournamentName: UILabel!
+    @IBOutlet weak var proceedButton: GradientButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        setData()
+        proceedButton.setUpButtonBackGround(colours: [#colorLiteral(red: 1, green: 0.7294117647, blue: 0.5490196078, alpha: 1), #colorLiteral(red: 0.9960784314, green: 0.3607843137, blue: 0.4156862745, alpha: 1)], cornerRadius: CGFloat(0))
+    }
+    override func viewDidLayoutSubviews() {
+        proceedButton.setUpButtonBackGround(colours: [#colorLiteral(red: 1, green: 0.7294117647, blue: 0.5490196078, alpha: 1), #colorLiteral(red: 0.9960784314, green: 0.3607843137, blue: 0.4156862745, alpha: 1)], cornerRadius: CGFloat(0))
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func setData() {
+        if let data = tournament {
+            tournamentCode.text = data.tournamentCode
+            tournamentName.text = data.name
+        }
     }
-    */
-
+    @IBAction func onClickProceed(_ sender: Any) {
+        let vc = storyboard?.instantiateViewController(identifier: "AddTeamListViewController") as! AddTeamListViewController
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }

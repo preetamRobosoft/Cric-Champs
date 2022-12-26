@@ -7,12 +7,18 @@
 
 import UIKit
 
+protocol ResetPassword {
+    func showSetPasswordView()
+}
+
 class OTPVerificationVC: UIViewController {
 
     @IBOutlet weak var otpTextField: UITextField!
     @IBOutlet weak var verifyButton: UIButton!
     var registerVM: RegistrationViewModel?
-    
+    var isForgotPassword = false
+    var resetPasswordDelagate: ResetPassword?
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -20,6 +26,14 @@ class OTPVerificationVC: UIViewController {
     }
     
     @IBAction func onVerifyButtonClick(_ sender: Any) {
+        if isForgotPassword {
+            otpVerificationForResetPassword()
+        } else {
+            otpVerificationForRegistration()
+        }
+    }
+    
+    private func otpVerificationForRegistration() {
         guard let vc = storyboard?.instantiateViewController(identifier: "SuccessFailViewController") as? SuccessFailViewController else {alertAction(controller: self, message: "Retry registration");return}
         guard let currentEmail = registerVM?.currentUser.email else {
             vc.didSuccessfullyRegister = false
@@ -35,10 +49,37 @@ class OTPVerificationVC: UIViewController {
         }
     }
     
+    private func otpVerificationForResetPassword() {
+        guard let currentEmail = registerVM?.currentUserEmail else {
+            return
+        }
+        registerVM?.currentUserEmail = currentEmail
+        registerVM?.otp = Int(otpTextField.text ?? "055111") ?? 055111
+        registerVM?.resetPasswordOtpVerification { isSucces in
+            DispatchQueue.main.async {
+                if isSucces {
+                    self.resetPasswordDelagate?.showSetPasswordView()
+                    self.navigationController?.popViewController(animated: true)
+                } else {
+                    print("Failed Rset Verification")
+                    //Add Action
+                }
+            }
+        }
+        
+    }
+    
     @IBAction func resendOTPButton(_ sender: Any) {
-        registerVM?.sendOTP(completion: { (isSuccess) in
+        if !isForgotPassword {
+            registerVM?.sendOTP(completion: { (isSuccess) in
             print("resent OTP")
-        })
+            })
+        } else {
+            registerVM?.resetPassword(completion: {
+                (isSuccess) in
+                print("resent OTP")
+            })
+        }
     }
     
     @IBAction func onBackTapped(_ sender: Any) {

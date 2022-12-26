@@ -26,7 +26,16 @@ class RegistrationViewModel {
     
     var otp: Int = 0
     var verifyOTPHeaders: [String: String] = [:]
-    var verifyOTPParameters: [String: Int] = [:]
+    //var verifyOTPParameters: [String: Int] = [:]
+    
+    var resetPasswordUrl = "\(baseURL)/forgot-password"
+    var resetPasswordOtpVerification = "\(baseURL)/reset"
+    var resetPasswordVerifyOTPHeaders: [String: String] = [:]
+    var newPasswordHeader: [String: String] = [:]
+    var setNewPasswordUrl = "\(baseURL)/reset-password"
+
+    
+    //var currentLogedToken = ["Authorization": ""]
     
     func assignSendOTPHeader() {
         sendOTPHeaders["email"] = currentUserEmail
@@ -34,19 +43,21 @@ class RegistrationViewModel {
     
     func assignVerifyOTPHeadersParameters() {
         verifyOTPHeaders["email"] = currentUserEmail
-        verifyOTPParameters["otp"] = otp
-        print(verifyOTPParameters)
+        verifyOTPHeaders["otp"] = String(otp)
+    }
+    
+    func assignresetPasswordVerifyOTPHeaders() {
+        resetPasswordVerifyOTPHeaders["email"] = currentUserEmail
+        resetPasswordVerifyOTPHeaders["otp"] = String(otp)
     }
     
     func verifyOTP(completion: @escaping((Bool) -> Void)) {
         assignVerifyOTPHeadersParameters()
-        print(verifyOTPParameters, "parmeters")
-        print(verifyOTPHeaders, "headers")
         let networkManger = NetworkManager()
-        networkManger.patchData(url: verifyOTPURL, parameters: verifyOTPParameters, headers: verifyOTPHeaders, image: nil) { (statusCode, error) in
+        networkManger.patchData(url: verifyOTPURL, parameters: ["":""], headers: verifyOTPHeaders, image: nil) { (statusCode, error) in
             if error != nil {
                 completion(false)
-                print(error?.localizedDescription)
+                print(error?.localizedDescription as Any)
                 return
             }
             
@@ -60,18 +71,64 @@ class RegistrationViewModel {
     func sendOTP(completion: @escaping((Bool) -> Void)) {
         let networkManger = NetworkManager()
         assignSendOTPHeader()
-        networkManger.postData(url: sendOTPURL, parameters: ["": ""], headers: sendOTPHeaders, image: nil) { (statusCode, error) in
+        networkManger.postData(url: sendOTPURL, parameters: ["": ""], headers: sendOTPHeaders, image: nil, imageFieldName: nil) { (response, data, error) in
             if error != nil {
                 completion(false)
                 return
             }
             
-            if statusCode == 200 {
+            if response.statusCode == 200 {
                 print("OTP sent successfully")
                 completion(true)
             }
         }
         
+    }
+    
+    func resetPassword(completion: @escaping((Bool) -> Void)) {
+        let networkManger = NetworkManager()
+        assignSendOTPHeader()
+        networkManger.patchData(url: resetPasswordUrl, parameters: ["":""], headers: sendOTPHeaders, image: nil){ (response, error) in
+            if error != nil {
+                completion(false)
+                return
+            }
+            if response == 200 {
+                print("OTP sent successfully")
+                completion(true)
+            }
+        }
+    }
+    
+    func resetPasswordOtpVerification(completion: @escaping((Bool) -> Void)) {
+        let networkManger = NetworkManager()
+        assignresetPasswordVerifyOTPHeaders()
+        networkManger.patchData(url: resetPasswordOtpVerification, parameters: ["":""], headers: resetPasswordVerifyOTPHeaders, image: nil){ (response, error) in
+            if error != nil {
+                completion(false)
+                return
+            }
+            if response == 200 {
+                print("OTP sent successfully")
+                completion(true)
+            }
+        }
+    }
+    
+    func setnewPassword(completion: @escaping((Bool) -> Void)) {
+        let networkManger = NetworkManager()
+        assignHeadersForSetNewPassword()
+        print(newPasswordHeader)
+        networkManger.patchData(url: setNewPasswordUrl, parameters: ["":""], headers: newPasswordHeader, image: nil){ (response, error) in
+            if error != nil {
+                completion(false)
+                return
+            }
+            if response == 200 {
+                print("OTP sent successfully")
+                completion(true)
+            }
+        }
     }
     
     func assignCurrentUser(username: String, gender: String, email: String, phoneNumber: String?, city: String?, age: Int?, password: String) {
@@ -87,7 +144,7 @@ class RegistrationViewModel {
     
     func assignHeaders() {
         guard let user = user else { return }
-        headers!["email"] = user.emai
+        headers!["email"] = user.email
         headers!["password"] = user.password
     }
     
@@ -105,36 +162,74 @@ class RegistrationViewModel {
         parameters["password"] = currentUser.password
     }
     
+    func assignHeadersForSetNewPassword() {
+        newPasswordHeader["email"] = currentUserEmail
+        newPasswordHeader["newPassword"] = password
+        
+    }
+
+    
     func registerCurrentUser(completion: @escaping((Bool) -> Void)) {
         let networkManger = NetworkManager()
-        networkManger.postData(url: signUpURL, parameters: parameters, headers: nil, image: currentUser.profilePhoto) { (statusCode, error) in
+        networkManger.postData(url: signUpURL, parameters: parameters, headers: nil, image: currentUser.profilePhoto, imageFieldName: "profilePhoto") { (response, data, error) in
             if error != nil {
                 completion(false)
                 return
             }
-            
-            if statusCode == 200 {
+
+            if response.statusCode == 200 {
                 print("Successful registration")
                 completion(true)
             } else {
-                print(statusCode,"Status code")
+                print(response.statusCode as Any,"Status code")
                 completion(false)
             }
         }
     }
-    
-    func logInUser(completion: @escaping((Bool) -> Void)) {
+        
+    func logInUser(completion: @escaping((User?,String?, Error?) -> Void)) {
         let networkManger = NetworkManager()
-        networkManger.postData(url: logInURL, parameters: ["": ""], headers: headers, image: nil) { (statusCode, error) in
-            if error != nil {
-                completion(false)
-                return
+        networkManger.postData(url: logInURL, parameters: ["": ""], headers: headers, image: nil, imageFieldName: nil) { (response, data, error) in
+                if error != nil {
+                    completion(nil,nil, error)
+                    return
+                }
+                if response.statusCode == 200 {
+                    if let data = data as? [String: Any] {
+                    let user = self.fetchLoggedUserData(response: response, data: data)
+                    completion(user,nil, nil)
+                    }
+                }
+                if response.statusCode == 406 {
+                    if let data = data as? [String: Any] {
+                        completion(nil, data["Error Message "] as? String, nil)
+                    }
+                }
             }
-            
-            if statusCode == 200 {
-                print("Succcesfull login")
-                completion(true)
+    }
+    
+    func fetchLoggedUserData(response: HTTPURLResponse, data: [String: Any]) -> User{
+        var authorizationToken = ""
+        var email = ""
+        var name = ""
+        var profile = ""
+        if let header = response.allHeaderFields as NSDictionary as? [String: Any] {
+            if let token = header["Authorization"] as? String {
+                authorizationToken = token
             }
         }
+        if let mail = data["email"] as? String {
+            email = mail
+        }
+        if let username = data["username"] as? String {
+            name = username
+        }
+        if let photoUrl = data["email"] as? String {
+            profile = photoUrl
+        }
+        print(authorizationToken)
+        
+        let user = User(email: email, password: "password", name: name, photo: profile, authorization: authorizationToken)
+        return user
     }
 }

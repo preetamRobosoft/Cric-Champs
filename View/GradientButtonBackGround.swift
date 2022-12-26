@@ -26,3 +26,22 @@ extension UIView {
     }
 }
 
+class GradientButton: UIButton {
+    let gradient: CAGradientLayer = CAGradientLayer()
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+    
+    func setUpButtonBackGround(colours: [UIColor],cornerRadius: CGFloat) {
+        gradient.frame = self.bounds
+        gradient.colors = colours.map { $0.cgColor }
+        gradient.startPoint = CGPoint(x: 0, y: 0.5)
+        gradient.endPoint = CGPoint(x: 1.0, y: 0.5)
+        gradient.cornerRadius = cornerRadius
+        self.layer.insertSublayer(gradient, at: 0)
+    }
+}

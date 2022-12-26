@@ -7,4 +7,4 @@
 
 import Foundation
 
-let baseURL = "http://cric-env.eba-esrqeiw3.ap-south-1.elasticbeanstalk.com"
+//let baseURL = "http://cric-env.eba-esrqeiw3.ap-south-1.elasticbeanstalk.com"

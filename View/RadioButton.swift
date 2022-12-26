@@ -57,4 +57,10 @@ class RadioButton: UIButton {
         self.layer.borderColor = #colorLiteral(red: 0.2901960784, green: 0.5647058824, blue: 0.8862745098, alpha: 1)
         self.setTitleColor(#colorLiteral(red: 0.2901960784, green: 0.5647058824, blue: 0.8862745098, alpha: 1), for: .normal)
     }
+    
+    func setDisabledBackGround() {
+        self.setImage(UIImage(named: "disabledRadio"), for: .normal)
+        self.layer.borderColor = #colorLiteral(red: 0.7529411765, green: 0.7529411765, blue: 0.7529411765, alpha: 1)
+        self.setTitleColor(#colorLiteral(red: 0.7529411765, green: 0.7529411765, blue: 0.7529411765, alpha: 1), for: .normal)
+    }
 }
